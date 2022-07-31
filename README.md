@@ -6,25 +6,22 @@
 ### Known Issue(s)
 Nothing
 
-### Toolchain Download (Use the ndk r25 instead)
+### Toolchain Download r24 (Use the ndk r25 instead)
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Google_Drive_logo.png/669px-Google_Drive_logo.png" style="width: 20px;heigth: 20px;"> GDrive : https://drive.google.com/file/d/1UIgXaRwsQT6wddB981H8vkKgZIyAOMy0 (Linux Only)
 
 ### Toolchain Changelog (will update soon)
-- Removing x86_64-linux-android i686-linux-android arm-linux-androideabi and aarch64-linux-android23-32 toolchains to decrease size
-- Remove share and test folder to decrease size.
-- Move original lld binary to bin/old folder.
-- Using elf.h linux/elf.h linux/elf-em.h linux/elf-fdpic.h from ndk r15c instead from the r24 one. (The old one are renamed with .orig suffix)
-- Replace crtbegin_so.o, crtbegin_static.o, crtend_android.o, crtend_so.o, libc.a, libc.so, libdl.so, libm.a, libm.so with the ndk r10e one. (To avoid versioned symbol warning)
-- Replace libstdc++.a, libstdc++.so with the ndk r14b.
-- Replace ndk r24 ld.lld with ld.lld from ndk r18b. (To avoid unsupported DT_FLAGS_1)
-- Replace sysroot/usr/lib/aarch64-linux-android/(libc.a, libm.a, libdl.a) with the api 21 one.
+- Remove x86_64-linux-android i686-linux-android arm-linux-androideabi and aarch64-linux-android23-33 toolchains to decrease size.
+- Remove x86_64-linux-android i686-linux-android arm-linux-androideabi (include, sysroot lib, and clang static lib) to decrease size.
+- Replace crtbegin_so.o, crtend_android.o, crtend_so.o, libc.so, libdl.so, libm.so with the ndk r10e one. (To avoid versioned symbol warning)
+- Replace libstdc++.so with the ndk r13b.
+- Replace ndk r25 lld with ld.lld from ndk r21e. (To avoid unsupported DT_FLAGS_1)
 - Symlink sysroot/usr/lib/aarch64-linux-android/22 to sysroot/usr/lib/aarch64-linux-android/21
 - Patching sysroot with ndk-patches from termux repo.
 
-### Compiler Flags (will update soon)
+### Compiler Flags (Experimental)
 ```
 PKG_CONFIG_LIBDIR=/data/data/com.termux/files/usr/lib/pkgconfig \
-TOOLCHAIN=/home/r24 \
+TOOLCHAIN=/home/r25 \
 CC=${TOOLCHAIN}/bin/aarch64-linux-android21-clang \
 CXX=${TOOLCHAIN}/bin/aarch64-linux-android21-clang++ \
 CPP=${TOOLCHAIN}/bin/aarch64-linux-android21-cpp \
@@ -34,7 +31,7 @@ AR=${TOOLCHAIN}/bin/llvm-ar \
 DWP=${TOOLCHAIN}/bin/llvm-dwp \
 GCOV=${TOOLCHAIN}/bin/llvm-cov \
 GPROF=${TOOLCHAIN}/bin/llvm-profdata \
-LD=${TOOLCHAIN}/bin/ld.lld \
+LD=${TOOLCHAIN}/bin/lld \
 NM=${TOOLCHAIN}/bin/llvm-nm \
 OBJCOPY=${TOOLCHAIN}/bin/llvm-objcopy \
 OBJDUMP=${TOOLCHAIN}/bin/llvm-objdump \
@@ -43,7 +40,7 @@ RANLIB=${TOOLCHAIN}/bin/llvm-ranlib \
 READELF=${TOOLCHAIN}/bin/llvm-readelf \
 SIZE=${TOOLCHAIN}/bin/llvm-size \
 STRINGS=${TOOLCHAIN}/bin/llvm-strings \
-CFLAGS="-march=armv8-a+simd -mtune=cortex-a53 -mcpu=cortex-a53 -fPIE -fPIC -O3 -mlittle-endian -fassociative-math -mfix-cortex-a53-835769 -fstack-protector-strong -fuse-ld=lld -Wno-unused-command-line-argument " \
+CFLAGS="-ffunction-sections -fdata-sections -Wl,--gc-sections -march=armv8-a+simd -mtune=cortex-a53 -mcpu=cortex-a53 -fPIE -fPIC -O3 -mlittle-endian -fassociative-math -mfix-cortex-a53-835769 -fstack-protector-strong -fuse-ld=lld -Wno-unused-command-line-argument " \
 LDFLAGS="-pie -L/data/data/com.termux/files/usr/lib -Wl,--as-needed -Wl,-z,relro,-z,now -Wl,--hash-style=sysv " \
 CXXFLAGS="${CFLAGS}" \
 CPPFLAGS="-I/data/data/com.termux/files/usr/include " \
@@ -66,4 +63,4 @@ Remove KRH/khrplatform.h provided by mesa.
 
 ### Credit :<br>
 - <a href="https://github.com/termux/termux-packages">@termux</a> for packages patch.
-- <a href="https://source.android.com">AOSP</a> for ndk r24 toolchain.
+- <a href="https://source.android.com">AOSP</a> for ndk r24, r25 toolchain.
