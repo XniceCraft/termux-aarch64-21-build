@@ -4,4 +4,4 @@
 ```The NDK may not working properly.```
 
 ### Known Issue(s)
-- Statically linked binary doesn't work properly.
+

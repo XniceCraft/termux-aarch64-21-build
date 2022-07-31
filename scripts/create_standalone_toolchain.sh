@@ -86,14 +86,11 @@ patch_file(){
   rm ndk_replacement.tar.xz
 
   local file_name
-  for file_name in crtbegin_dynamic.o crtbegin_static.o crtend_android.o crtbegin_so.o crtend_so.o libm.so libdl.so libc.so libstdc++.so libc.a lld; do
-    if [[ "$file_name" != "lld" ]] && [[ "$file_name" != "libc.a" ]]; then
+  for file_name in crtbegin_dynamic.o crtend_android.o crtbegin_so.o crtend_so.o libm.so libdl.so libc.so libstdc++.so lld; do
+    if [[ "$file_name" != "lld" ]]; then
       rm "${ndk_version}/sysroot/usr/lib/aarch64-linux-android/21/${file_name}"
       mv "ndk_replacement/${file_name}" "${ndk_version}/sysroot/usr/lib/aarch64-linux-android/21/${file_name}"
-    elif [[ "$file_name" == "libc.a" ]]; then
-      rm "${ndk_version}/sysroot/usr/lib/aarch64-linux-android/libc.a"
-      mv "ndk_replacement/libc.a" "${ndk_version}/sysroot/usr/lib/aarch64-linux-android/libc.a"
-    elif [[ "$file_name" == "lld" ]]; then
+    else
       rm "${ndk_version}/bin/lld"
       mv "ndk_replacement/lld" "${ndk_version}/bin/lld"
     fi
