@@ -86,11 +86,14 @@ patch_file(){
   rm ndk_replacement.tar.xz
 
   local file_name
-  for file_name in crtbegin_dynamic.o crtbegin_static.o crtend_android.o crtbegin_so.o crtend_so.o libm.so libdl.so libc.so libstdc++.so lld; do
-    if [[ "$file_name" != "lld" ]]; then
+  for file_name in crtbegin_dynamic.o crtbegin_static.o crtend_android.o crtbegin_so.o crtend_so.o libm.so libdl.so libc.so libstdc++.so libc.a lld; do
+    if [[ "$file_name" != "lld" ]] && [[ "$file_name" != "libc.a" ]]; then
       rm "${ndk_version}/sysroot/usr/lib/aarch64-linux-android/21/${file_name}"
       mv "ndk_replacement/${file_name}" "${ndk_version}/sysroot/usr/lib/aarch64-linux-android/21/${file_name}"
-    else
+    elif [[ "$file_name" == "libc.a" ]]; then
+      rm "${ndk_version}/sysroot/usr/lib/aarch64-linux-android/libc.a"
+      mv "ndk_replacement/libc.a" "${ndk_version}/sysroot/usr/lib/aarch64-linux-android/libc.a"
+    elif [[ "$file_name" == "lld" ]]; then
       rm "${ndk_version}/bin/lld"
       mv "ndk_replacement/lld" "${ndk_version}/bin/lld"
     fi
@@ -102,8 +105,9 @@ patch_file(){
   ln -s aarch64-linux-android21-clang++ "${ndk_version}/bin/aarch64-linux-android-clang++"
   ln -s aarch64-linux-android21-clang "${ndk_version}/bin/aarch64-linux-android-gcc"
   ln -s aarch64-linux-android21-clang++ "${ndk_version}/bin/aarch64-linux-android-g++"
-  cp "${ndk_version}/bin/aarch64-linux-android21-clang" "${ndk_version}/bin/aarch64-linux-android-cpp"
-  sed -i 's/clang/clang -E/' "${ndk_version}/bin/aarch64-linux-android-cpp"
+  cp "${ndk_version}/bin/aarch64-linux-android21-clang" "${ndk_version}/bin/aarch64-linux-android21-cpp"
+  sed -i 's/clang\"/clang\" -E/' "${ndk_version}/bin/aarch64-linux-android21-cpp"
+  ln -s aarch64-linux-android21-cpp "${ndk_version}/bin/aarch64-linux-android-cpp"
 
   local _host_pkgconfig
   _host_pkgconfig=$(command -v pkg-config)
