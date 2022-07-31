@@ -4,4 +4,4 @@
 ```The NDK may not working properly.```
 
 ### Known Issue(s)
-- Error when static linking
+- -
