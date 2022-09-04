@@ -141,7 +141,11 @@ EOF
   echo "[~] Downloading termux ndk-patches & patching"
   cd "${ndk_version}/sysroot/usr" || (echo "${ndk_version}/sysroot/usr doest\'nt exist"; exit)
   for file_name in "${patch_list[@]}"; do
-    wget_handler "https://github.com/termux/termux-packages/raw/master/ndk-patches/${file_name}" "$file_name"
+    if [[ "$file_name" != "libintl.h" ]] && [[ "$file_name" != "langinfo.h" ]]; then
+        wget_handler "https://github.com/termux/termux-packages/raw/master/ndk-patches/23c/${file_name}" "$file_name"
+    else
+        wget_handler "https://github.com/termux/termux-packages/raw/master/ndk-patches/${file_name}" "$file_name"
+    fi
     if [[ "$file_name" != "libintl.h" ]] && [[ "$file_name" != "langinfo.h" ]]; then
       sed -i -e "s;@TERMUX_PREFIX@;/data/data/com.termux/files/usr;g" -e "s;@TERMUX_HOME@;/data/data/com.termux/files/home;g" "$file_name"
       patch --silent -b -p2 -i "$file_name"
